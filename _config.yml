@@ -3,6 +3,9 @@
 
 title: Pandas by Example
 author: Siphiwe Mahlangu
+copyright: '2024'
+
+only_build_toc_files: true
 
 # Force re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
@@ -19,10 +22,10 @@ latex:
 #   - references.bib
 
 # Information about where the book exists on the web
-# repository:
-#   url: https://github.com/executablebooks/jupyter-book  # Online location of your book
+repository:
+  url: https://theabstract.github.io/pandas-by-example/ # Online location of your book
 #   path_to_book: docs  # Optional path to your book, relative to the repository root
-#   branch: master  # Which branch of the repository should be used when creating links (optional)
+  branch: main  # Which branch of the repository should be used when creating links (optional)
 
 # Add GitHub buttons to your book
 # See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
