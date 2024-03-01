@@ -4,3 +4,4 @@
 *env/
 .hideme/
 _build/
+*.ipynb
