@@ -1,7 +1,0 @@
-.DS_Store
-.ipynb_checkpoints/
-*cache*
-*env/
-.hideme/
-_build/
-*.ipynb
