@@ -7,3 +7,4 @@ chapters:
 - file: 01-the-basics
 - file: 02-selection-and-filtering
 - file: 03-grouping-and-aggregation
+- file: 04-merging-and-joining
