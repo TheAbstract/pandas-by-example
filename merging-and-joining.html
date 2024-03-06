@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Selecting and Filtering data &#8212; Pandas by Example</title>
+    <title>Merging and Joining &#8212; Pandas by Example</title>
   
   
   
@@ -62,11 +62,11 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '02-selection-and-filtering';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'merging-and-joining';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Grouping and Aggregation" href="03-grouping-and-aggregation.html" />
-    <link rel="prev" title="Getting Started with Pandas" href="01-the-basics.html" />
+    <link rel="next" title="Missing Values" href="missing-values.html" />
+    <link rel="prev" title="Grouping and Aggregation" href="grouping-and-aggregation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -165,10 +165,10 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="01-the-basics.html">Getting Started with Pandas</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Selecting and Filtering data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03-grouping-and-aggregation.html">Grouping and Aggregation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-merging-and-joining.html">Merging and Joining</a></li>
+<li class="toctree-l1"><a class="reference internal" href="the-basics.html">Getting Started with Pandas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selection-and-filtering.html">Selecting and Filtering data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grouping-and-aggregation.html">Grouping and Aggregation</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Merging and Joining</a></li>
 <li class="toctree-l1"><a class="reference internal" href="missing-values.html">Missing Values</a></li>
 </ul>
 
@@ -224,7 +224,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/02-selection-and-filtering.ipynb" target="_blank"
+      <li><a href="_sources/merging-and-joining.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -308,7 +308,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Selecting and Filtering data</h1>
+    <h1>Merging and Joining</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -318,8 +318,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-specific-columns">Selecting specific columns</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-rows-based-on-a-condition">Filtering rows based on a condition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-join">Inner Join</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#left-join">Left Join</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concatenation">Concatenation</a></li>
 </ul>
             </nav>
         </div>
@@ -331,10 +332,9 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="selecting-and-filtering-data">
-<h1>Selecting and Filtering data<a class="headerlink" href="#selecting-and-filtering-data" title="Permalink to this heading">#</a></h1>
-<p>Working with data almost always involves selection and filetering to focus on specific subsets of information within datasets.<br />
-Here we cover some techniques provided by pandas for selecting columns and filtering rows based on specified conditions.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="merging-and-joining">
+<h1>Merging and Joining<a class="headerlink" href="#merging-and-joining" title="Permalink to this heading">#</a></h1>
+<p>Merging and joining data from different sources is a critical skill enabling analysts to integrate and consolidate information from multiple datasets.</p>
 <p><strong>Sample data</strong>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -345,14 +345,23 @@ Here we cover some techniques provided by pandas for selecting columns and filte
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;employee_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
-    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sal&#39;</span><span class="p">,</span> <span class="s1">&#39;Yang&#39;</span><span class="p">,</span> <span class="s1">&#39;Khaya&#39;</span><span class="p">,</span> <span class="s1">&#39;Lin&#39;</span><span class="p">,</span> <span class="s1">&#39;Eve&#39;</span><span class="p">,</span> <span class="s1">&#39;Mike&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">60000</span><span class="p">,</span> <span class="mi">75000</span><span class="p">,</span> <span class="mi">80000</span><span class="p">,</span> <span class="mi">62000</span><span class="p">,</span> <span class="mi">90000</span><span class="p">,</span> <span class="mi">70000</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">employees</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;employee_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sal&#39;</span><span class="p">,</span> <span class="s1">&#39;Yang&#39;</span><span class="p">,</span> <span class="s1">&#39;Khaya&#39;</span><span class="p">,</span> <span class="s1">&#39;Lin&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">60000</span><span class="p">,</span> <span class="mi">75000</span><span class="p">,</span> <span class="mi">80000</span><span class="p">,</span> <span class="mi">62000</span><span class="p">]</span>
 <span class="p">}</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">df</span>
+
+<span class="n">access_control</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;employee_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
+    <span class="s1">&#39;access_level&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">employees</span><span class="p">)</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">access_control</span><span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">df1</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">df2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -410,30 +419,62 @@ Here we cover some techniques provided by pandas for selecting columns and filte
       <td>Sales</td>
       <td>62000</td>
     </tr>
+  </tbody>
+</table>
+</div></div><div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>employee_id</th>
+      <th>access_level</th>
+    </tr>
+  </thead>
+  <tbody>
     <tr>
-      <th>4</th>
-      <td>8</td>
-      <td>Eve</td>
-      <td>Engineering</td>
-      <td>90000</td>
+      <th>0</th>
+      <td>3</td>
+      <td>high</td>
     </tr>
     <tr>
-      <th>5</th>
+      <th>1</th>
+      <td>7</td>
+      <td>low</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>8</td>
+      <td>low</td>
+    </tr>
+    <tr>
+      <th>3</th>
       <td>9</td>
-      <td>Mike</td>
-      <td>Sales</td>
-      <td>70000</td>
+      <td>high</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<section id="selecting-specific-columns">
-<h2>Selecting specific columns<a class="headerlink" href="#selecting-specific-columns" title="Permalink to this heading">#</a></h2>
-<p>To select only the <code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">salary</span></code> columns:</p>
+<section id="inner-join">
+<h2>Inner Join<a class="headerlink" href="#inner-join" title="Permalink to this heading">#</a></h2>
+<p>An inner join merges two datasets based on a common key, keeping only the rows that have matching keys in both datasets.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">]]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;employee_id&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
+<span class="n">result</span>
 </pre></div>
 </div>
 </div>
@@ -456,52 +497,42 @@ Here we cover some techniques provided by pandas for selecting columns and filte
   <thead>
     <tr style="text-align: right;">
       <th></th>
+      <th>employee_id</th>
       <th>name</th>
+      <th>department</th>
       <th>salary</th>
+      <th>access_level</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>Sal</td>
-      <td>60000</td>
+      <td>3</td>
+      <td>Yang</td>
+      <td>Marketing</td>
+      <td>75000</td>
+      <td>high</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>Yang</td>
-      <td>75000</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Khaya</td>
-      <td>80000</td>
-    </tr>
-    <tr>
-      <th>3</th>
+      <td>7</td>
       <td>Lin</td>
+      <td>Sales</td>
       <td>62000</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Eve</td>
-      <td>90000</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>Mike</td>
-      <td>70000</td>
+      <td>low</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
 </section>
-<section id="filtering-rows-based-on-a-condition">
-<h2>Filtering rows based on a condition<a class="headerlink" href="#filtering-rows-based-on-a-condition" title="Permalink to this heading">#</a></h2>
+<section id="left-join">
+<h2>Left Join<a class="headerlink" href="#left-join" title="Permalink to this heading">#</a></h2>
+<p>A left join returns all the rows from the left dataset and the matched rows from the right dataset. Any unmatched rows in the right dataset will contain NaN values.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">engineers</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;department&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">]</span>
-<span class="n">engineers</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;employee_id&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+<span class="n">result</span>
 </pre></div>
 </div>
 </div>
@@ -528,58 +559,7 @@ Here we cover some techniques provided by pandas for selecting columns and filte
       <th>name</th>
       <th>department</th>
       <th>salary</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2</th>
-      <td>4</td>
-      <td>Khaya</td>
-      <td>Engineering</td>
-      <td>80000</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>8</td>
-      <td>Eve</td>
-      <td>Engineering</td>
-      <td>90000</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>You can also include multiple conditions by including more expressions or using the <code class="docutils literal notranslate"><span class="pre">isin</span></code> method:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sales_or_marketing</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;department&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">])]</span>
-<span class="n">sales_or_marketing</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>employee_id</th>
-      <th>name</th>
-      <th>department</th>
-      <th>salary</th>
+      <th>access_level</th>
     </tr>
   </thead>
   <tbody>
@@ -589,6 +569,7 @@ Here we cover some techniques provided by pandas for selecting columns and filte
       <td>Sal</td>
       <td>Sales</td>
       <td>60000</td>
+      <td>NaN</td>
     </tr>
     <tr>
       <th>1</th>
@@ -596,6 +577,15 @@ Here we cover some techniques provided by pandas for selecting columns and filte
       <td>Yang</td>
       <td>Marketing</td>
       <td>75000</td>
+      <td>high</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4</td>
+      <td>Khaya</td>
+      <td>Engineering</td>
+      <td>80000</td>
+      <td>NaN</td>
     </tr>
     <tr>
       <th>3</th>
@@ -603,13 +593,73 @@ Here we cover some techniques provided by pandas for selecting columns and filte
       <td>Lin</td>
       <td>Sales</td>
       <td>62000</td>
+      <td>low</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="concatenation">
+<h2>Concatenation<a class="headerlink" href="#concatenation" title="Permalink to this heading">#</a></h2>
+<p>Concatenation is used to combine datasets along a particular axis, either row-wise or column-wise.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;employee_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sal&#39;</span><span class="p">,</span> <span class="s1">&#39;Yang&#39;</span><span class="p">],</span> <span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">]})</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;employee_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Khaya&#39;</span><span class="p">,</span> <span class="s1">&#39;Lin&#39;</span><span class="p">],</span> <span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">]})</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df1</span><span class="p">,</span> <span class="n">df2</span><span class="p">])</span>
+<span class="n">result</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>employee_id</th>
+      <th>name</th>
+      <th>department</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>Sal</td>
+      <td>Sales</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>9</td>
-      <td>Mike</td>
+      <th>1</th>
+      <td>3</td>
+      <td>Yang</td>
+      <td>Marketing</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>4</td>
+      <td>Khaya</td>
+      <td>Engineering</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>7</td>
+      <td>Lin</td>
       <td>Sales</td>
-      <td>70000</td>
     </tr>
   </tbody>
 </table>
@@ -649,20 +699,20 @@ Here we cover some techniques provided by pandas for selecting columns and filte
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="01-the-basics.html"
+       href="grouping-and-aggregation.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Getting Started with Pandas</p>
+        <p class="prev-next-title">Grouping and Aggregation</p>
       </div>
     </a>
     <a class="right-next"
-       href="03-grouping-and-aggregation.html"
+       href="missing-values.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Grouping and Aggregation</p>
+        <p class="prev-next-title">Missing Values</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -682,8 +732,9 @@ Here we cover some techniques provided by pandas for selecting columns and filte
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#selecting-specific-columns">Selecting specific columns</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering-rows-based-on-a-condition">Filtering rows based on a condition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inner-join">Inner Join</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#left-join">Left Join</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#concatenation">Concatenation</a></li>
 </ul>
   </nav></div>
 
