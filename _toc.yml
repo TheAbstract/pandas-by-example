@@ -9,3 +9,4 @@ chapters:
 - file: grouping-and-aggregation
 - file: merging-and-joining
 - file: missing-values
+- file: data-transformations
