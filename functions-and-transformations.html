@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Missing Values &#8212; Pandas by Example</title>
+    <title>Applying functions and transformations &#8212; Pandas by Example</title>
   
   
   
@@ -62,11 +62,12 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'missing-values';</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'functions-and-transformations';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Applying functions and transformations" href="functions-and-transformations.html" />
-    <link rel="prev" title="Merging and Joining" href="merging-and-joining.html" />
+    <link rel="prev" title="Missing Values" href="missing-values.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -169,8 +170,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="selection-and-filtering.html">Selecting and Filtering data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grouping-and-aggregation.html">Grouping and Aggregation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="merging-and-joining.html">Merging and Joining</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Missing Values</a></li>
-<li class="toctree-l1"><a class="reference internal" href="functions-and-transformations.html">Applying functions and transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="missing-values.html">Missing Values</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Applying functions and transformations</a></li>
 </ul>
 
     </div>
@@ -225,7 +226,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/missing-values.ipynb" target="_blank"
+      <li><a href="_sources/functions-and-transformations.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -309,7 +310,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Missing Values</h1>
+    <h1>Applying functions and transformations</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -319,9 +320,10 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identifying-missing-values">Identifying missing values</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-missing-data-by-dropping-values">Handling missing data by dropping values</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-missing-data-by-filling-values">Handling missing data by filling values</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-map-to-transform-data">Using map to Transform Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-functions-to-columns">Applying Functions to Columns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-lambda-functions-for-custom-transformations">Using Lambda Functions for Custom Transformations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-conditional-transformations">Applying conditional transformations</a></li>
 </ul>
             </nav>
         </div>
@@ -333,9 +335,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="missing-values">
-<h1>Missing Values<a class="headerlink" href="#missing-values" title="Permalink to this heading">#</a></h1>
-<p>Dealing with missing data is a common challenge when working with real-world data. Lets explore the various methods provided by pandas for identifying and handling missing values within datasets.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="applying-functions-and-transformations">
+<h1>Applying functions and transformations<a class="headerlink" href="#applying-functions-and-transformations" title="Permalink to this heading">#</a></h1>
+<p>We can apply functions to transform data and create new variables.
+This can be done based on calculations and conditional criteria.</p>
 <p><strong>Sample data</strong>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -347,9 +350,9 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;employee_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">)],</span>
+    <span class="s1">&#39;employee_id&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span>
     <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sal&#39;</span><span class="p">,</span> <span class="s1">&#39;Yang&#39;</span><span class="p">,</span> <span class="s1">&#39;Khaya&#39;</span><span class="p">,</span> <span class="s1">&#39;Lin&#39;</span><span class="p">,</span> <span class="s1">&#39;Eve&#39;</span><span class="p">,</span> <span class="s1">&#39;Mike&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">],</span>
     <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">60000</span><span class="p">,</span> <span class="mi">75000</span><span class="p">,</span> <span class="mi">80000</span><span class="p">,</span> <span class="mi">62000</span><span class="p">,</span> <span class="mi">90000</span><span class="p">,</span> <span class="mi">70000</span><span class="p">]</span>
 <span class="p">}</span>
 
@@ -386,57 +389,65 @@ document.write(`
   <tbody>
     <tr>
       <th>0</th>
-      <td>2.0</td>
+      <td>2</td>
       <td>Sal</td>
       <td>Sales</td>
       <td>60000</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>3.0</td>
+      <td>3</td>
       <td>Yang</td>
       <td>Marketing</td>
       <td>75000</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>4.0</td>
+      <td>4</td>
       <td>Khaya</td>
       <td>Engineering</td>
       <td>80000</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>7.0</td>
+      <td>7</td>
       <td>Lin</td>
       <td>Sales</td>
       <td>62000</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>8.0</td>
+      <td>8</td>
       <td>Eve</td>
       <td>Engineering</td>
       <td>90000</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>NaN</td>
+      <td>9</td>
       <td>Mike</td>
-      <td>None</td>
+      <td>Sales</td>
       <td>70000</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<section id="identifying-missing-values">
-<h2>Identifying missing values<a class="headerlink" href="#identifying-missing-values" title="Permalink to this heading">#</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">isna</span></code> method will return <code class="docutils literal notranslate"><span class="pre">True</span></code> for any missing entries in a dataset when indicated in a standard way.</p>
-<p>Note that both id and department entries are identified is missing entries.</p>
+<section id="using-map-to-transform-data">
+<h2>Using map to Transform Data<a class="headerlink" href="#using-map-to-transform-data" title="Permalink to this heading">#</a></h2>
+<p>How to use the <code class="docutils literal notranslate"><span class="pre">map()</span></code> function to apply a transformation based on a dictionary.</p>
+<p>In this example, we use the <code class="docutils literal notranslate"><span class="pre">map()</span></code> function to create a new column <code class="docutils literal notranslate"><span class="pre">dept_abbreviation</span></code> by mapping the department names to their respective abbreviations defined in the <code class="docutils literal notranslate"><span class="pre">dept_abbr</span></code> dictionary.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">employees</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dept_abbr</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Sales&#39;</span><span class="p">:</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Marketing&#39;</span><span class="p">:</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Engineering&#39;</span><span class="p">:</span> <span class="s1">&#39;E&#39;</span>
+<span class="p">}</span>
+
+<span class="c1"># Apply the transformation using map function</span>
+<span class="n">employees</span><span class="p">[</span><span class="s1">&#39;dept_abbreviation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">employees</span><span class="p">[</span><span class="s1">&#39;department&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">dept_abbr</span><span class="p">)</span>
+<span class="n">employees</span>
 </pre></div>
 </div>
 </div>
@@ -463,244 +474,372 @@ document.write(`
       <th>name</th>
       <th>department</th>
       <th>salary</th>
+      <th>dept_abbreviation</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-      <td>False</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>True</td>
-      <td>False</td>
-      <td>True</td>
-      <td>False</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>To see the number of missing entries in each column we can sum the result of <code class="docutils literal notranslate"><span class="pre">isna</span></code>.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">employees</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>employee_id    1
-name           0
-department     1
-salary         0
-dtype: int64
-</pre></div>
-</div>
-</div>
-</div>
-</section>
-<section id="handling-missing-data-by-dropping-values">
-<h2>Handling missing data by dropping values<a class="headerlink" href="#handling-missing-data-by-dropping-values" title="Permalink to this heading">#</a></h2>
-<p>Drop rows with any missing values</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">employees</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>employee_id</th>
-      <th>name</th>
-      <th>department</th>
-      <th>salary</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2.0</td>
+      <td>2</td>
       <td>Sal</td>
       <td>Sales</td>
       <td>60000</td>
+      <td>S</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>3.0</td>
+      <td>3</td>
       <td>Yang</td>
       <td>Marketing</td>
       <td>75000</td>
+      <td>M</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>4.0</td>
+      <td>4</td>
       <td>Khaya</td>
       <td>Engineering</td>
       <td>80000</td>
+      <td>E</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>7.0</td>
+      <td>7</td>
       <td>Lin</td>
       <td>Sales</td>
       <td>62000</td>
+      <td>S</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>8.0</td>
+      <td>8</td>
       <td>Eve</td>
       <td>Engineering</td>
       <td>90000</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
-</div>
-<p>We can also drop observations based on more specific conditions.</p>
-<p>Drop rows where all cells in that row is NA:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Drop column if they only contain missing values:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="handling-missing-data-by-filling-values">
-<h2>Handling missing data by filling values<a class="headerlink" href="#handling-missing-data-by-filling-values" title="Permalink to this heading">#</a></h2>
-<p>We can also fill in missing values with appropriate substitutes. For example when creating models we need all entries to have some value.</p>
-<p>Fill in missing data with zeros:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">employees</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>employee_id</th>
-      <th>name</th>
-      <th>department</th>
-      <th>salary</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2.0</td>
-      <td>Sal</td>
-      <td>Sales</td>
-      <td>60000</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>3.0</td>
-      <td>Yang</td>
-      <td>Marketing</td>
-      <td>75000</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>4.0</td>
-      <td>Khaya</td>
-      <td>Engineering</td>
-      <td>80000</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>7.0</td>
-      <td>Lin</td>
-      <td>Sales</td>
-      <td>62000</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>8.0</td>
-      <td>Eve</td>
-      <td>Engineering</td>
-      <td>90000</td>
+      <td>E</td>
     </tr>
     <tr>
       <th>5</th>
-      <td>0.0</td>
+      <td>9</td>
       <td>Mike</td>
-      <td>0</td>
+      <td>Sales</td>
       <td>70000</td>
+      <td>S</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
 </div>
-<p>Fill in missing value with mean of that column.
-Say we had missing values for salary, we could use the mean of the values we have for the fill value.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mean_salary</span> <span class="o">=</span> <span class="n">employees</span><span class="o">.</span><span class="n">salary</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">employees</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">mean_salary</span><span class="p">)</span>
+</section>
+<section id="applying-functions-to-columns">
+<h2>Applying Functions to Columns<a class="headerlink" href="#applying-functions-to-columns" title="Permalink to this heading">#</a></h2>
+<p>We can use the <code class="docutils literal notranslate"><span class="pre">apply()</span></code> function to apply a custom function to each element in a column. Say the salary is in dollars and we want to convert it to euros using an exchange rate of <span class="math notranslate nohighlight">\(0.91\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">dollars_to_euros</span><span class="p">(</span><span class="n">salary</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">salary</span> <span class="o">*</span> <span class="mf">0.91</span>
+
+<span class="n">employees</span><span class="p">[</span><span class="s1">&#39;salary_in_euros&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">employees</span><span class="p">[</span><span class="s1">&#39;salary&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">dollars_to_euros</span><span class="p">)</span>
+<span class="n">employees</span>
 </pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>employee_id</th>
+      <th>name</th>
+      <th>department</th>
+      <th>salary</th>
+      <th>dept_abbreviation</th>
+      <th>salary_in_euros</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>Sal</td>
+      <td>Sales</td>
+      <td>60000</td>
+      <td>S</td>
+      <td>54600.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>Yang</td>
+      <td>Marketing</td>
+      <td>75000</td>
+      <td>M</td>
+      <td>68250.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4</td>
+      <td>Khaya</td>
+      <td>Engineering</td>
+      <td>80000</td>
+      <td>E</td>
+      <td>72800.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>7</td>
+      <td>Lin</td>
+      <td>Sales</td>
+      <td>62000</td>
+      <td>S</td>
+      <td>56420.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>8</td>
+      <td>Eve</td>
+      <td>Engineering</td>
+      <td>90000</td>
+      <td>E</td>
+      <td>81900.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>9</td>
+      <td>Mike</td>
+      <td>Sales</td>
+      <td>70000</td>
+      <td>S</td>
+      <td>63700.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="using-lambda-functions-for-custom-transformations">
+<h2>Using Lambda Functions for Custom Transformations<a class="headerlink" href="#using-lambda-functions-for-custom-transformations" title="Permalink to this heading">#</a></h2>
+<p>Lambda functions provide a concise way to define simple functions. We can use lambda functions with the <code class="docutils literal notranslate"><span class="pre">apply()</span></code> function to perform custom transformations on our data.</p>
+<p>Here we use a lambda function to capitalise the employee names:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">employees</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">employees</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+<span class="n">employees</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>employee_id</th>
+      <th>name</th>
+      <th>department</th>
+      <th>salary</th>
+      <th>dept_abbreviation</th>
+      <th>salary_in_euros</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>SAL</td>
+      <td>Sales</td>
+      <td>60000</td>
+      <td>S</td>
+      <td>54600.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>YANG</td>
+      <td>Marketing</td>
+      <td>75000</td>
+      <td>M</td>
+      <td>68250.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4</td>
+      <td>KHAYA</td>
+      <td>Engineering</td>
+      <td>80000</td>
+      <td>E</td>
+      <td>72800.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>7</td>
+      <td>LIN</td>
+      <td>Sales</td>
+      <td>62000</td>
+      <td>S</td>
+      <td>56420.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>8</td>
+      <td>EVE</td>
+      <td>Engineering</td>
+      <td>90000</td>
+      <td>E</td>
+      <td>81900.0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>9</td>
+      <td>MIKE</td>
+      <td>Sales</td>
+      <td>70000</td>
+      <td>S</td>
+      <td>63700.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="applying-conditional-transformations">
+<h2>Applying conditional transformations<a class="headerlink" href="#applying-conditional-transformations" title="Permalink to this heading">#</a></h2>
+<p>We can use conditional logic to apply transformations based on certain conditions in the data. Let’s create a new column <code class="docutils literal notranslate"><span class="pre">bonus_eligible</span></code> based on a experience threshold, where employees with more than 3 years experiece are considered eligible for a bonus.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add new column for the experience in years</span>
+<span class="n">employees</span><span class="p">[</span><span class="s1">&#39;experience_years&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">employees</span><span class="p">[</span><span class="s1">&#39;bonus_eligible&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">employees</span><span class="p">[</span><span class="s1">&#39;experience_years&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;Yes&#39;</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="k">else</span> <span class="s1">&#39;No&#39;</span><span class="p">)</span>
+<span class="n">employees</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>employee_id</th>
+      <th>name</th>
+      <th>department</th>
+      <th>salary</th>
+      <th>dept_abbreviation</th>
+      <th>salary_in_euros</th>
+      <th>experience_years</th>
+      <th>bonus_eligible</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>SAL</td>
+      <td>Sales</td>
+      <td>60000</td>
+      <td>S</td>
+      <td>54600.0</td>
+      <td>3</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3</td>
+      <td>YANG</td>
+      <td>Marketing</td>
+      <td>75000</td>
+      <td>M</td>
+      <td>68250.0</td>
+      <td>4</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4</td>
+      <td>KHAYA</td>
+      <td>Engineering</td>
+      <td>80000</td>
+      <td>E</td>
+      <td>72800.0</td>
+      <td>2</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>7</td>
+      <td>LIN</td>
+      <td>Sales</td>
+      <td>62000</td>
+      <td>S</td>
+      <td>56420.0</td>
+      <td>5</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>8</td>
+      <td>EVE</td>
+      <td>Engineering</td>
+      <td>90000</td>
+      <td>E</td>
+      <td>81900.0</td>
+      <td>7</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>9</td>
+      <td>MIKE</td>
+      <td>Sales</td>
+      <td>70000</td>
+      <td>S</td>
+      <td>63700.0</td>
+      <td>3</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
 </section>
 </section>
@@ -736,22 +875,13 @@ Say we had missing values for salary, we could use the mean of the values we hav
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="merging-and-joining.html"
+       href="missing-values.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Merging and Joining</p>
+        <p class="prev-next-title">Missing Values</p>
       </div>
-    </a>
-    <a class="right-next"
-       href="functions-and-transformations.html"
-       title="next page">
-      <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Applying functions and transformations</p>
-      </div>
-      <i class="fa-solid fa-angle-right"></i>
     </a>
 </div>
                 </footer>
@@ -769,9 +899,10 @@ Say we had missing values for salary, we could use the mean of the values we hav
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#identifying-missing-values">Identifying missing values</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-missing-data-by-dropping-values">Handling missing data by dropping values</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-missing-data-by-filling-values">Handling missing data by filling values</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-map-to-transform-data">Using map to Transform Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-functions-to-columns">Applying Functions to Columns</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-lambda-functions-for-custom-transformations">Using Lambda Functions for Custom Transformations</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#applying-conditional-transformations">Applying conditional transformations</a></li>
 </ul>
   </nav></div>
 

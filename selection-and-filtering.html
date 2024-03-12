@@ -170,6 +170,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="grouping-and-aggregation.html">Grouping and Aggregation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="merging-and-joining.html">Merging and Joining</a></li>
 <li class="toctree-l1"><a class="reference internal" href="missing-values.html">Missing Values</a></li>
+<li class="toctree-l1"><a class="reference internal" href="functions-and-transformations.html">Applying functions and transformations</a></li>
 </ul>
 
     </div>
@@ -351,8 +352,9 @@ Here we cover some techniques provided by pandas for selecting columns and filte
     <span class="s1">&#39;department&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">,</span> <span class="s1">&#39;Sales&#39;</span><span class="p">],</span>
     <span class="s1">&#39;salary&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">60000</span><span class="p">,</span> <span class="mi">75000</span><span class="p">,</span> <span class="mi">80000</span><span class="p">,</span> <span class="mi">62000</span><span class="p">,</span> <span class="mi">90000</span><span class="p">,</span> <span class="mi">70000</span><span class="p">]</span>
 <span class="p">}</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">df</span>
+
+<span class="n">employees</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">employees</span>
 </pre></div>
 </div>
 </div>
@@ -433,7 +435,7 @@ Here we cover some techniques provided by pandas for selecting columns and filte
 <p>To select only the <code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">salary</span></code> columns:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">]]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">employees</span><span class="p">[[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;salary&#39;</span><span class="p">]]</span>
 </pre></div>
 </div>
 </div>
@@ -500,7 +502,7 @@ Here we cover some techniques provided by pandas for selecting columns and filte
 <h2>Filtering rows based on a condition<a class="headerlink" href="#filtering-rows-based-on-a-condition" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">engineers</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;department&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">engineers</span> <span class="o">=</span> <span class="n">employees</span><span class="p">[</span><span class="n">employees</span><span class="p">[</span><span class="s1">&#39;department&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Engineering&#39;</span><span class="p">]</span>
 <span class="n">engineers</span>
 </pre></div>
 </div>
@@ -552,7 +554,7 @@ Here we cover some techniques provided by pandas for selecting columns and filte
 <p>You can also include multiple conditions by including more expressions or using the <code class="docutils literal notranslate"><span class="pre">isin</span></code> method:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sales_or_marketing</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;department&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">])]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sales_or_marketing</span> <span class="o">=</span> <span class="n">employees</span><span class="p">[</span><span class="n">employees</span><span class="p">[</span><span class="s1">&#39;department&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;Sales&#39;</span><span class="p">,</span> <span class="s1">&#39;Marketing&#39;</span><span class="p">])]</span>
 <span class="n">sales_or_marketing</span>
 </pre></div>
 </div>
